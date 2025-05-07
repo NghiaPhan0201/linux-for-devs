@@ -7,12 +7,14 @@ CFLAGS = -Wall
 all: create_static
 
 create_static: create_obj
-	$(AR) lib/libcalc.a obj/*.o
 	mkdir -p lib
+	$(AR) lib/libcalc.a obj/*.o
 
-create_obj: calc/*.c
+obj/%.o: calc/%.c
 	mkdir -p obj
-	$(CC) $(CFLAGS) -c calc/*.c -o obj/*.o
+	$(CC) $(CFLAGS) -c $< -o $@
+
+create_obj: $(patsubst calc/%.c,obj/%.o,$(wildcard calc/*.c))
 
 run: create_static
 	$(CC) main.c -Icalc -Llib -lcalc -o test_static

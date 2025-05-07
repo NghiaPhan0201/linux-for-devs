@@ -8,11 +8,13 @@ all: create_shared
 
 create_shared: create_obj
 	mkdir -p lib
-	$(CC) $(LDFLAGS) -o lib/libcalc.so obj/*.o
+	$(CC) $(LDFLAGS) obj/*.o -o lib/libcalc.so
 
-create_obj: calc/*.c
+obj/%.o: calc/%.c
 	mkdir -p obj
-	$(CC) $(CFLAGS) -c calc/*.c -o obj/
+	$(CC) $(CFLAGS) -c $< -o $@
+
+create_obj: $(patsubst calc/%.c,obj/%.o,$(wildcard calc/*.c))
 
 run: create_shared
 	$(CC) main.c -Icalc -Llib -lcalc -o test_shared
