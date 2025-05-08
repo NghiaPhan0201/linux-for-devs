@@ -2,21 +2,31 @@ CC = gcc
 CFLAGS = -Wall -fPIC
 LDFLAGS = -shared
 
-.PHONY: all clean run create_obj create_shared
+.PHONY: all clean run
 
-all: create_shared
+all: lib/libcalc.so
 
-create_shared: create_obj
+lib/libcalc.so: obj/calc_add.o obj/calc_sub.o obj/calc_mul.o obj/calc_div.o
 	mkdir -p lib
-	$(CC) $(LDFLAGS) obj/*.o -o lib/libcalc.so
+	$(CC) $(LDFLAGS) obj/calc_add.o obj/calc_sub.o obj/calc_mul.o obj/calc_div.o -o lib/libcalc.so
 
-obj/%.o: calc/%.c
+obj/calc_add.o: calc/calc_add.c
 	mkdir -p obj
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c calc/calc_add.c -o obj/calc_add.o
 
-create_obj: $(patsubst calc/%.c,obj/%.o,$(wildcard calc/*.c))
+obj/calc_sub.o: calc/calc_sub.c
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c calc/calc_sub.c -o obj/calc_sub.o
 
-run: create_shared
+obj/calc_mul.o: calc/calc_mul.c
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c calc/calc_mul.c -o obj/calc_mul.o
+
+obj/calc_div.o: calc/calc_div.c
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c calc/calc_div.c -o obj/calc_div.o
+
+run: lib/libcalc.so
 	$(CC) main.c -Icalc -Llib -lcalc -o test_shared
 	LD_LIBRARY_PATH=lib ./test_shared
 
