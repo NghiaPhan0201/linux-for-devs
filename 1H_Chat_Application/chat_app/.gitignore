@@ -1,0 +1,13 @@
+# Build artifacts
+build/
+*.o
+*.out
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
